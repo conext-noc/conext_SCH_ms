@@ -28,7 +28,7 @@ SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["sch-ms-conext.us-west-2.elasticbeanstalk.com, sch.conext.net.ve, 127.0.0.1, localhost"]
+ALLOWED_HOSTS = ["sch-ms-conext.us-west-2.elasticbeanstalk.com", "sch.conext.net.ve", "127.0.0.1", "localhost"]
 
 
 # Application definition
