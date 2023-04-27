@@ -37,3 +37,32 @@ def clientFinder(data):
             "error": True,
             "message":"OLT does not exist"
         }
+        
+def clientPwrFinder(data):
+    oltOptions = ["1", "2", "3"]
+    if data['olt'] in oltOptions:
+        ip = devices[f"OLT{data['olt']}"]
+        (comm, command, quit) = ssh(ip)
+        decoder(comm)
+        client,fail = data_lookup(comm,command,data['contract']).values()
+        
+        if fail != None:
+            data['error'] = fail
+            quit()
+            return {
+            "error": True,
+            "message":fail
+            }
+            
+        (_, client["pwr"]) = opticalValues(comm,command,client)
+        quit()
+        return {
+                "name": client["name"],
+                "pwr":client["pwr"]
+            }
+    
+    else:
+        return {
+            "error": True,
+            "message":"OLT does not exist"
+        }
