@@ -2,13 +2,13 @@ import os
 from time import sleep
 import paramiko
 from dotenv import load_dotenv
-load_dotenv()
 
+load_dotenv()
 
 
 def ssh(ip):
     count = 1
-    delay = 0.8
+    delay = 0.1
     conn = paramiko.SSHClient()
     conn.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     comm = None
@@ -28,26 +28,25 @@ def ssh(ip):
             count += 1
             continue
         break
-    
+
     def enter():
         comm.send(" \n")
         comm.send(" \n")
         sleep(delay)
 
     def command(cmd):
-        print(cmd)
         comm.send(cmd)
         sleep(delay)
         enter()
 
-    def quit():
+    def quit_ssh():
         conn.close()
 
-    if ip == "181.232.180.5" or ip == "181.232.180.6" or ip == "181.232.180.7":
+    if ip in ["181.232.180.5", "181.232.180.6", "181.232.180.7"]:
         command("enable")
         command("config")
         command("scroll 512")
     else:
         command("sys")
 
-    return (comm, command, quit)
+    return (comm, command, quit_ssh)

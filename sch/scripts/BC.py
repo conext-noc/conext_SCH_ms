@@ -1,68 +1,52 @@
-
-from unittest import result
-from sch.helpers.devices import devices
-from sch.helpers.data_lookup import data_lookup
 from sch.scripts.ssh import ssh
-from sch.helpers.decoder import decoder
-from sch.helpers.optical_finder import opticalValues
-from sch.helpers.ont_type_finder import typeCheck
-from sch.helpers.wan_finder import wan
+from sch.helpers import (
+    definitions,
+    request,
+    last_down_onu,
+    optical,
+)
 
-def clientFinder(data):
-    oltOptions = ["1", "2", "3"]
-    if data['olt'] in oltOptions:
-        ip = devices[f"OLT{data['olt']}"]
-        (comm, command, quit) = ssh(ip)
-        decoder(comm)
-        client,fail = data_lookup(comm,command,data['contract']).values()
-        
-        if fail != None:
-            data['error'] = fail
-            quit()
-            return {
-            "error": True,
-            "message":fail
-            }
-            
-        client["olt"] = data["olt"]
-        (client["temp"], client["pwr"]) = opticalValues(comm,command,client)
-        client["type"] = typeCheck(comm,command,client)
-        (client["ip_address"], client["wan"]) = wan(comm,command,client)
-        quit()
-        return client
-    
-    
-    else:
-        return {
-            "error": True,
-            "message":"OLT does not exist"
-        }
-        
-def clientPwrFinder(data):
-    oltOptions = ["1", "2", "3"]
-    if data['olt'] in oltOptions:
-        ip = devices[f"OLT{data['olt']}"]
-        (comm, command, quit) = ssh(ip)
-        decoder(comm)
-        client,fail = data_lookup(comm,command,data['contract']).values()
-        
-        if fail != None:
-            data['error'] = fail
-            quit()
-            return {
-            "error": True,
-            "message":fail
-            }
-            
-        (_, client["pwr"]) = opticalValues(comm,command,client)
-        quit()
-        return {
-                "name": client["name"],
-                "pwr":client["pwr"]
-            }
-    
-    else:
-        return {
-            "error": True,
-            "message":"OLT does not exist"
-        }
+# FUNCTION IMPORT DEFINITIONS
+db_request = request.db_request
+endpoints = definitions.endpoints
+olt_devices = definitions.olt_devices
+payload = definitions.payload
+down_values = last_down_onu.down_values
+optical_values = optical.optical_values
+
+
+# def client_lookup(comm, command, quit_ssh, device, action):
+def client_finder(data):
+    payload["lookup_type"] = "C"
+    payload["lookup_value"] = data["contract"]
+    req = db_request(endpoints["get_client"], payload)
+    if req["error"]:
+        print("an error occurred")
+        return None
+    client = req["data"]
+    (comm, command, quit_ssh) = ssh(olt_devices[str(client["olt"])])
+    (client["temp"], client["pwr"]) = optical_values(comm, command, client)
+    (
+        client["last_down_cause"],
+        client["last_down_time"],
+        client["last_down_date"],
+    ) = down_values(comm, command, client)
+    quit_ssh()
+    client["name"] = f'{client["name_1"]} {client["name_2"]} {client["contract"]}'
+    return client
+
+
+def optical_finder(data):
+    response = {"name": None, "pwr": None}
+    payload["lookup_type"] = "C"
+    payload["lookup_value"] = data["contract"]
+    req = db_request(endpoints["get_client"], payload)
+    if req["error"]:
+        print("an error occurred")
+        return None
+    client = req["data"]
+    (comm, command, quit_ssh) = ssh(olt_devices[str(client["olt"])])
+    (_, response["pwr"]) = optical_values(comm, command, client)
+    quit_ssh()
+    response["name"] = f'{client["name_1"]} {client["name_2"]} {client["contract"]}'
+    return response
