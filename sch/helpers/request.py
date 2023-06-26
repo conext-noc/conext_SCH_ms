@@ -16,6 +16,6 @@ def db_request(endpoint: str, data: dict):
         if response.status_code != requests.codes.ok:
             return f"Request failed with status code: {response.status_code}"
         response_json = response.json()
-        return {"error": False, "data": response_json["client"]}
+        return {"error": False, "data": response_json["data"]}
     except requests.RequestException as e:
         return {"error": True, "data": f"An error occurred: {str(e)}"}
