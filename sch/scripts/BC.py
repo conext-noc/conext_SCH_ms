@@ -20,8 +20,7 @@ def client_finder(data):
     payload["lookup_type"] = "C"
     payload["lookup_value"] = data["contract"]
     req = db_request(endpoints["get_client"], payload)
-    if req["error"]:
-        print("an error occurred")
+    if req["data"] is None:
         return None
     client = req["data"]
     (comm, command, quit_ssh) = ssh(olt_devices[str(client["olt"])])
@@ -41,8 +40,7 @@ def optical_finder(data):
     payload["lookup_type"] = "C"
     payload["lookup_value"] = data["contract"]
     req = db_request(endpoints["get_client"], payload)
-    if req["error"]:
-        print("an error occurred")
+    if req["data"] is None:
         return None
     client = req["data"]
     (comm, command, quit_ssh) = ssh(olt_devices[str(client["olt"])])

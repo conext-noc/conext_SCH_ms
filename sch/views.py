@@ -19,28 +19,32 @@ class CHECK(generics.GenericAPIView):
 class SCH(generics.GenericAPIView):
     def get(self, req):
         if req.META["HTTP_CONEXT_KEY"] == os.environ["CONEXT_KEY"]:
-            status_code = 200
             contract = req.query_params.get("contract")
             olt = req.query_params.get("olt")
             data = {"contract": contract, "olt": olt}
             res = client_finder(data)
-            if res is None:
-                return HttpResponse("An Error Occurred", status=401)
             response_data = {"message": "OK", "data": res}
-            return Response(response_data, status=status_code)
+            if res is None:
+                response_data = {
+                    "message": "The required OLT & ONT does not exists",
+                    "data": res,
+                }
+            return Response(response_data, status=200)
         return HttpResponse("Bad Request to server", status=500)
 
 
 class PWR(generics.GenericAPIView):
     def get(self, req):
         if req.META["HTTP_CONEXT_KEY"] == os.environ["CONEXT_KEY"]:
-            status_code = 200
             contract = req.query_params.get("contract")
             olt = req.query_params.get("olt")
             data = {"contract": contract, "olt": olt}
             res = optical_finder(data)
-            if res is None:
-                return HttpResponse("An Error Occurred", status=401)
             response_data = {"message": "OK", "data": res}
-            return Response(response_data, status=status_code)
+            if res is None:
+                response_data = {
+                    "message": "The required OLT & ONT does not exists",
+                    "data": res,
+                }
+            return Response(response_data, status=200)
         return HttpResponse("Bad Request to server", status=500)
