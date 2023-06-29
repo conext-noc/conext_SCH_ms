@@ -29,6 +29,7 @@ def client_finder(data):
         client["last_down_cause"],
         client["last_down_time"],
         client["last_down_date"],
+        client["status"],
     ) = down_values(comm, command, client)
     quit_ssh()
     client["name"] = f'{client["name_1"]} {client["name_2"]} {client["contract"]}'
