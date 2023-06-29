@@ -11,7 +11,7 @@ def optical_values(comm, command, data):
     command(
         f'  display  ont  optical-info  {data["port"]}  {data["onu_id"]}  |  no-more'
     )
-    sleep(1)
+    sleep(2)
     command("quit")
     value = decoder(comm)
     fail = fail_checker(value)

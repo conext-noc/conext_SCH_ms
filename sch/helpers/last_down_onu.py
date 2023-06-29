@@ -10,7 +10,7 @@ from sch.helpers.regex_conditions import (
 def down_values(comm, command, data):
     command(f'  interface  gpon  {data["frame"]}/{data["slot"]}  ')
     command(f'  display  ont  info  {data["port"]}  {data["onu_id"]}  |  no-more')
-    sleep(1)
+    sleep(2)
     command("quit")
     value = decoder(comm)
     fail = fail_checker(value)
