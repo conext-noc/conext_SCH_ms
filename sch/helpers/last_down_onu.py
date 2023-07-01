@@ -38,8 +38,12 @@ def down_values(comm, command, data):
     (e_s, _) = re_status_end.span()
 
     CAUSE = value[s_c : e_c - 2].replace("\n", "").replace("\r", "")
-    DATE = value[s_t : e_t - 2].replace("\n", "").replace("\r", "").split(" ")[0]
-    TIME = value[s_t : e_t - 2].replace("\n", "").replace("\r", "").split(" ")[1]
     STATUS = value[s_s : e_s - 2].replace("\n", "").replace("\r", "")
-
+    TIME_DATE = value[s_t : e_t - 2].replace("\n", "").replace("\r", "")
+    if TIME_DATE != "-":
+        DATE = value[s_t : e_t - 2].replace("\n", "").replace("\r", "").split(" ")[0]
+        TIME = value[s_t : e_t - 2].replace("\n", "").replace("\r", "").split(" ")[1]
+    else:
+        DATE = "-"
+        TIME = "-"
     return (CAUSE, TIME, DATE, STATUS)
