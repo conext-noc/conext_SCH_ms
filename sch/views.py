@@ -48,3 +48,19 @@ class PWR(generics.GenericAPIView):
                 }
             return Response(response_data, status=200)
         return HttpResponse("Bad Request to server", status=500)
+
+
+class SCHDashboard(generics.GenericAPIView):
+    def post(self, req):
+        if req.data["API_KEY"] == os.environ["API_KEY"]:
+            contract = req.query_params.get("contract")
+            data = {"contract": contract}
+            res = client_finder(data)
+            response_data = {"message": "OK", "data": res}
+            if res is None:
+                response_data = {
+                    "message": "The required OLT & ONT does not exists",
+                    "data": res,
+                }
+            return Response(response_data, status=200)
+        return HttpResponse("Bad Request to server", status=500)
