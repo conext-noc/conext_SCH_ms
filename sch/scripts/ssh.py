@@ -1,9 +1,7 @@
-import os
 from time import sleep
 import paramiko
-from dotenv import load_dotenv
-
-load_dotenv()
+from sch.helpers.request import db_request
+from sch.helpers.definitions import endpoints
 
 
 def ssh(ip):
@@ -13,13 +11,13 @@ def ssh(ip):
     conn.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     comm = None
     cont = True
-
+    creds = db_request(endpoints["get_creds"], {})
     # Handling multiple SSH sessions
     while cont and count <= 3:
         try:
-            username = os.environ[f"user_{count}"]
-            password = os.environ[f"password_{count}"]
-            port = os.environ["port"]
+            username = creds["data"][count]["user_name"]
+            password = creds["data"][count]["password"]
+            port = 22
             conn.connect(ip, port, username, password)
             comm = conn.invoke_shell()
             cont = False
@@ -43,11 +41,6 @@ def ssh(ip):
     def quit_ssh():
         conn.close()
 
-    if ip in ["181.232.180.5", "181.232.180.6", "181.232.180.7"]:
-        command("enable")
-        command("config")
-        command("scroll 512")
-    else:
-        command("sys")
-
+    command("enable")
+    command("config")
     return (comm, command, quit_ssh)
