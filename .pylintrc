@@ -437,7 +437,9 @@ disable=raw-checker-failed,
         line-too-long,
         anomalous-backslash-in-string,
         inconsistent-return-statements,
-        too-many-locals
+        too-many-locals,
+        expression-not-assigned,
+        consider-using-with
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
