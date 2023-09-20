@@ -38,7 +38,7 @@ ALLOWED_HOSTS = [
 ]
 
 
-# CORS
+# USE OF CORS
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://conext.net.ve",
@@ -48,11 +48,12 @@ CORS_ALLOWED_ORIGINS = [
     "https://dashboard-staging-drab.vercel.app/auth",
     "dashboard-staging-drab.vercel.app/auth",
     "http://localhost:8000",
-    "*"
+    "dashboard.us-west-2.elasticbeanstalk.com",
 ]
-CORS_ALLOW_CREDENTIALS = True
 
-CORS_ORIGIN_ALLOW_ALL = False
+CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOW_METHODS = [
     "GET",
