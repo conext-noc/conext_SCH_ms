@@ -18,7 +18,7 @@ optical_values = optical.optical_values
 # def client_lookup(comm, command, quit_ssh, device, action):
 def client_finder(data):
     payload["lookup_type"] = "C"
-    payload["lookup_value"] = data["contract"]
+    payload["lookup_value"] = data["contract"] + f'_{data["olt"]}'
     req = db_request(endpoints["get_client"], payload)
     if req["data"] is None:
         return None
@@ -39,7 +39,7 @@ def client_finder(data):
 def optical_finder(data):
     response = {"name": None, "pwr": None}
     payload["lookup_type"] = "C"
-    payload["lookup_value"] = data["contract"]
+    payload["lookup_value"] = data["contract"] + f'_{data["olt"]}'
     req = db_request(endpoints["get_client"], payload)
     if req["data"] is None:
         return None

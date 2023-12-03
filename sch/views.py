@@ -54,7 +54,8 @@ class SCHDashboard(generics.GenericAPIView):
     def post(self, req):
         if req.data["API_KEY"] == os.environ["API_KEY"]:
             contract = req.query_params.get("contract")
-            data = {"contract": contract}
+            olt = req.query_params.get("olt")
+            data = {"contract": contract, "olt": olt}
             res = client_finder(data)
             response_data = {"message": "OK", "data": res}
             if res is None:
